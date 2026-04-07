@@ -32,6 +32,21 @@
       color: white;
     }
 
+    .home-link {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      z-index: 2;
+      font-weight: 500;
+    }
+
+    .home-link:hover {
+      text-decoration: underline;
+    }
+
     .header h1 {
       font-size: 42px;
       margin-bottom: 10px;
@@ -108,11 +123,14 @@
 <body>
 
   <div class="header">
+
+    <a href="index.html" class="home-link">Home</a>
+
     <div class="header-content">
       <h1>Plans & Pricing</h1>
 
       <p>
-        Get reliable, high-quality support through a monthly subscription without the stress of hiring. We match you with the right person and stay involved to make sure everything runs smoothly.
+        Get reliable, high-quality support through a simple monthly subscription without the stress of hiring. We match you with the right person and stay involved so everything runs smoothly.
       </p>
 
       <a href="mailto:info@thetasksummit.com" class="contact-link">Get in touch</a>
