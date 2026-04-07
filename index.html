@@ -22,6 +22,21 @@
       position: relative;
     }
 
+    .pricing-link {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 16px;
+      text-decoration: none;
+      z-index: 2;
+      font-weight: 500;
+    }
+
+    .pricing-link:hover {
+      text-decoration: underline;
+    }
+
     .header::before {
       content: "";
       position: absolute;
@@ -178,6 +193,8 @@
 <body>
 
   <div class="header">
+    <a href="pricing.html" class="pricing-link">Pricing</a>
+
     <div class="header-content">
       <img src="logo.png" class="logo-img">
       <div class="header-text">
