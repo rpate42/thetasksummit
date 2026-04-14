@@ -86,13 +86,6 @@
       line-height: 1.5;
     }
 
-    .guarantee {
-      margin-top: 25px;
-      font-size: 18px;
-      font-weight: 600;
-      color: #bbf7d0;
-    }
-
     .form-box {
       max-width: 600px;
       margin: 40px auto 0;
@@ -213,14 +206,13 @@
 
   <!-- TOP FORM -->
   <div class="image-section">
-   <p style="margin-bottom: 30px;">
-  We find, vet, train, and place reliable virtual assistants into your business so you can skip the headaches of hiring and focus on growth.
-   </p>
+  <p style="margin-bottom:30px;">
+    We find, vet, train, and place reliable virtual assistants into your business so you can skip the headaches of hiring and focus on growth.
+  </p>
 
-    <!-- GUARANTEE LINE -->
-    <p class="guarantee">
-      No long-term contracts. If it’s not a fit, we replace your assistant within 48 hours.
-    </p>
+  <p style="margin-top:0;font-size:18px;font-weight:600;color:#bbf7d0;">
+    No long-term contracts. If it’s not a fit, we replace your assistant within 48 hours.
+  </p>
 
     <form class="form-box">
 
@@ -254,4 +246,112 @@
     </form>
   </div>
 
-  <!-- rest of your code unchanged -->
+  <div class="section">
+    <h2>What We Handle</h2>
+    <div class="services">
+      <div class="card">Administrative Support</div>
+      <div class="card">Customer Communication</div>
+      <div class="card">Scheduling and Coordination</div>
+      <div class="card">Data Entry and Back Office Work</div>
+      <div class="card">Inbox and CRM Management</div>
+      <div class="card">Lead Generation</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>How We Work</h2>
+    <div class="text-block">
+      Our business is built around making your day easier. We focus on taking work off your plate so you can spend less time managing tasks and more time focusing on what actually matters.
+      <br><br>
+      At the end of the day, our goal is simple. Make your life easier and make sure you are always supported by someone you can rely on.
+      <br><br>
+      Your satisfaction is our number one priority. If at any point your placement doesn’t feel like the right fit, we guarantee a replacement within 48 hours.
+      <br><br>
+      Don't waste your time with emails and admin work. Tell us what you need and we will handle the rest.
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="section" style="display: flex; align-items: center; gap: 40px; flex-wrap: wrap; text-align: left;">
+    <div style="flex: 1; min-width: 280px; text-align: center;">
+      <img src="me.jpg" alt="Ryan Pate" style="width: 100%; max-width: 350px; border-radius: 10px;">
+    </div>
+
+    <div style="flex: 1; min-width: 280px;">
+      <h2>About the Founder</h2>
+      <p>Hi, I’m Ryan Pate, founder of Task Summit.</p>
+      <p>I come from the insurance industry, where precision, fast follow-ups, and strong communication aren’t optional, they’re everything. I also know that when you’re stuck handling emails, calls, and admin work, you’re not growing your business.</p>
+      <p>That’s why I built Task Summit. We provide reliable virtual assistants who handle your day-to-day tasks with consistency and attention to detail. I handle the hiring, training, and oversight so you can focus on what actually makes you money.</p>
+    </div>
+  </div>
+
+  <!-- BOTTOM FORM -->
+  <div class="image-section">
+
+    <form class="form-box">
+
+      <div class="form-row">
+        <input type="text" name="first_name" placeholder="First Name">
+        <input type="text" name="last_name" placeholder="Last Name">
+      </div>
+
+      <div class="form-row">
+        <input type="text" name="phone" placeholder="Phone Number">
+        <input type="email" name="email" placeholder="Email (required)" required>
+      </div>
+
+      <div class="form-row">
+        <input type="text" name="industry" placeholder="Industry">
+        <select name="best_time">
+          <option value="">Best Time to Call</option>
+          <option>9am - 12pm (EST)</option>
+          <option>12pm - 1pm (EST)</option>
+          <option>1pm - 4pm (EST)</option>
+          <option>4pm - 6pm (EST)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn">Schedule a Free Consultation</button>
+
+      <div class="success-message">
+        Thank you for your submission. Someone will reach out to you soon.
+      </div>
+
+    </form>
+  </div>
+
+  <div class="section">
+    <h2>Contact</h2>
+    <p>(954) 900-6219</p>
+    <p>info@thetasksummit.com</p>
+  </div>
+
+  <div class="footer">
+    Task Summit
+  </div>
+
+  <script>
+    const forms = document.querySelectorAll("form");
+
+    forms.forEach((form) => {
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const data = new FormData(form);
+
+        fetch("https://formspree.io/f/mlgozrgn", {
+          method: "POST",
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        }).then(response => {
+          if (response.ok) {
+            form.querySelector(".success-message").style.display = "block";
+            form.reset();
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
