@@ -210,7 +210,7 @@
       We find, vet, train, and place reliable virtual assistants into your business so you can skip the headaches of hiring and focus on growth.
     </p>
 
-    <form class="form-box" id="contact-form">
+    <form class="form-box">
 
       <div class="form-row">
         <input type="text" name="first_name" placeholder="First Name">
@@ -235,7 +235,7 @@
 
       <button type="submit" class="submit-btn">Schedule a Free Consultation</button>
 
-      <div class="success-message" id="success">
+      <div class="success-message">
         Thank you for your submission. Someone will reach out to you soon.
       </div>
 
@@ -261,9 +261,9 @@
       <br><br>
       At the end of the day, our goal is simple. Make your life easier and make sure you are always supported by someone you can rely on.
       <br><br>
-      Your satisfaction is our number one priority. If at any point your placement doesn’t feel like the right fit, we guarantee a replacement within 48 hours.
-      <br><br>
       Don't waste your time with emails and admin work. Tell us what you need and we will handle the rest.
+      <br><br>
+      Your satisfaction is our number one priority. If at any point your placement doesn’t feel like the right fit, we guarantee a replacement within 48 hours.
     </div>
   </div>
 
@@ -277,14 +277,14 @@
       <h2>About the Founder</h2>
       <p>Hi, I’m Ryan Pate, founder of Task Summit.</p>
       <p>I come from the insurance industry, where precision, fast follow-ups, and strong communication aren’t optional, they’re everything. I also know that when you’re stuck handling emails, calls, and admin work, you’re not growing your business.</p>
-      <p>That’s why I built Task Summit. We provide reliable virtual assistants who handle your day-to-day tasks with consistency and attention to detail. We handle the hiring, training, and oversight so you can focus on what actually makes you money.</p>
+      <p>That’s why I built Task Summit. We provide reliable virtual assistants who handle your day-to-day tasks with consistency and attention to detail. I handle the hiring, training, and oversight so you can focus on what actually makes you money.</p>
     </div>
   </div>
 
-  <!-- BOTTOM FORM (IDENTICAL) -->
+  <!-- BOTTOM FORM -->
   <div class="image-section">
 
-    <form class="form-box" id="contact-form">
+    <form class="form-box">
 
       <div class="form-row">
         <input type="text" name="first_name" placeholder="First Name">
@@ -309,7 +309,7 @@
 
       <button type="submit" class="submit-btn">Schedule a Free Consultation</button>
 
-      <div class="success-message" id="success">
+      <div class="success-message">
         Thank you for your submission. Someone will reach out to you soon.
       </div>
 
@@ -327,21 +327,24 @@
   </div>
 
   <script>
-    const form = document.getElementById("contact-form");
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
+    const forms = document.querySelectorAll("form");
 
-      const data = new FormData(form);
+    forms.forEach((form) => {
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
 
-      fetch("https://formspree.io/f/mlgozrgn", {
-        method: "POST",
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      }).then(response => {
-        if (response.ok) {
-          document.getElementById("success").style.display = "block";
-          form.reset();
-        }
+        const data = new FormData(form);
+
+        fetch("https://formspree.io/f/mlgozrgn", {
+          method: "POST",
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        }).then(response => {
+          if (response.ok) {
+            form.querySelector(".success-message").style.display = "block";
+            form.reset();
+          }
+        });
       });
     });
   </script>
