@@ -1,194 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Report Generator FINAL</title>
+    <meta charset="UTF-8">
+    <title>Docx Reader</title>
+
+    <!-- Prevent search engines -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Mammoth library for .docx -->
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            font-size: 22px;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        input {
+            margin-top: 10px;
+        }
+    </style>
 </head>
-<body style="font-family: Arial; padding:20px;">
+<body>
 
-<h2>Transcript to Report Generator</h2>
+<h1>Upload .docx File</h1>
 
-<label>Select Role:</label><br>
-<select id="role">
-    <option value="insured">Insured</option>
-    <option value="claimant">Claimant</option>
-    <option value="witness">Witness</option>
-</select><br><br>
+<input type="file" id="fileInput" accept=".docx">
 
-<input type="file" id="fileInput"><br><br>
-
-<textarea id="transcript" rows="12" cols="90" placeholder="If docx fails, paste here"></textarea><br><br>
-
-<button onclick="generateReport()">Generate Report</button>
+<div id="output">Your text will appear here...</div>
 
 <script>
+document.getElementById("fileInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
 
-// =============================
-// MAIN
-// =============================
-function generateReport() {
+    if (!file) return;
 
-    const role = document.getElementById("role").value;
-    const file = document.getElementById("fileInput").files[0];
-
-    if (!file) {
-        const text = document.getElementById("transcript").value;
-        const cleaned = cleanTranscript(text);
-        const report = processTranscript(cleaned, role);
-        download(report);
-        return;
-    }
-
-    // Try reading as text (works if docx exported as plain text internally)
     const reader = new FileReader();
 
-    reader.onload = function(e) {
-        const text = e.target.result;
-
-        const cleaned = cleanTranscript(text);
-        const report = processTranscript(cleaned, role);
-        download(report);
+    reader.onload = function(event) {
+        mammoth.extractRawText({ arrayBuffer: event.target.result })
+            .then(function(result) {
+                document.getElementById("output").textContent = result.value;
+            })
+            .catch(function(err) {
+                document.getElementById("output").textContent = "Error reading file.";
+                console.error(err);
+            });
     };
 
-    reader.readAsText(file);
-}
-
-
-// =============================
-// CLEAN INPUT
-// =============================
-function cleanTranscript(text) {
-    return text
-        .replace(/\[\d{1,2}:\d{2}:\d{2}\]/g, "")
-        .replace(/\d{1,2}:\d{2}:\d{2}/g, "")
-        .replace(/Speaker \d:/gi, "")
-        .replace(/\s+/g, " ")
-        .trim();
-}
-
-
-// =============================
-// TRANSCRIPT ENGINE
-// =============================
-function processTranscript(text, role) {
-
-    let sentences = text.split(/(?<=[\?\.\!])\s+/);
-
-    let sections = [];
-    let currentQuestion = "";
-    let currentAnswer = [];
-
-    function isQuestion(line) {
-        const l = line.toLowerCase();
-        return (
-            l.includes("?") ||
-            l.startsWith("what") ||
-            l.startsWith("when") ||
-            l.startsWith("where") ||
-            l.startsWith("why") ||
-            l.startsWith("how") ||
-            l.startsWith("did") ||
-            l.startsWith("were")
-        );
-    }
-
-    sentences.forEach(line => {
-
-        if (isQuestion(line)) {
-
-            if (currentQuestion && currentAnswer.length > 0) {
-                sections.push({ q: currentQuestion, a: currentAnswer.join(" ") });
-            }
-
-            currentQuestion = line;
-            currentAnswer = [];
-
-        } else {
-            currentAnswer.push(line);
-        }
-
-    });
-
-    if (currentQuestion && currentAnswer.length > 0) {
-        sections.push({ q: currentQuestion, a: currentAnswer.join(" ") });
-    }
-
-    return buildReport(sections, role);
-}
-
-
-// =============================
-// LANGUAGE ENGINE
-// =============================
-function formatQA(q, a, role) {
-
-    const qLower = q.toLowerCase();
-    const aLower = a.toLowerCase();
-
-    let verb = "stated that";
-    if (a.split(" ").length > 30) verb = "explained that";
-
-    if (qLower.includes("in your own words")) {
-        return `In describing the incident, the ${role} ${verb} ${a}.`;
-    }
-
-    if (aLower === "yes") {
-        return `The ${role} confirmed that ${q.replace("?", "").toLowerCase()}.`;
-    }
-
-    if (aLower === "no") {
-        return `The ${role} stated that ${q.replace("?", "").toLowerCase()} did not occur.`;
-    }
-
-    return `The ${role} ${verb} ${a}.`;
-}
-
-
-// =============================
-// BUILD REPORT
-// =============================
-function buildReport(sections, role) {
-
-    let report = "";
-    let paragraph = "";
-
-    sections.forEach((item, i) => {
-
-        paragraph += formatQA(item.q, item.a, role) + " ";
-
-        if ((i + 1) % 3 === 0) {
-            report += paragraph.trim() + "\n\n";
-            paragraph = "";
-        }
-    });
-
-    if (paragraph) report += paragraph.trim();
-
-    return report;
-}
-
-
-// =============================
-// DOWNLOAD (ALWAYS WORKS)
-// =============================
-function download(text) {
-
-    const html = `
-    <html>
-    <head><meta charset="UTF-8"></head>
-    <body style="font-family:Calibri; font-size:11pt;">
-    ${text.replace(/\n/g, "<br><br>")}
-    </body>
-    </html>
-    `;
-
-    const blob = new Blob(['\ufeff', html], { type: "application/msword" });
-
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "REPORT.doc";
-    link.click();
-}
-
+    reader.readAsArrayBuffer(file);
+});
 </script>
 
 </body>
