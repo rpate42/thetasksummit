@@ -1,1 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Generator</title>
 
+    <meta name="robots" content="noindex, nofollow">
+
+    <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        select, input, button {
+            margin-top: 10px;
+            padding: 6px;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            background: white;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Report Generator</h2>
+
+<label>Select Role:</label><br>
+<select id="role">
+    <option value="insured">Insured</option>
+    <option value="claimant">Claimant</option>
+    <option value="witness">Witness</option>
+</select>
+
+<br>
+
+<input type="file" id="fileInput" accept=".docx">
+
+<br>
+
+<button onclick="generateReport()">Generate Report</button>
+
+<div id="output">Upload a .docx file...</div>
+
+<script>
+let transcriptText = "";
+
+document.getElementById("fileInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
+            .then(function(result) {
+                transcriptText = result.value;
+                document.getElementById("output").textContent = transcriptText;
+            })
+            .catch(function(err) {
+                document.getElementById("output").textContent = "Error reading file.";
+                console.error(err);
+            });
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+
+function generateReport() {
+    if (!transcriptText) {
+        alert("Upload a file first.");
+        return;
+    }
+
+    const role = document.getElementById("role").value;
+
+    let intro = "";
+
+    if (role === "insured") {
+        intro = "The insured provided the following statement:\n\n";
+    } else if (role === "claimant") {
+        intro = "The claimant provided the following statement:\n\n";
+    } else {
+        intro = "The witness provided the following statement:\n\n";
+    }
+
+    const cleanedText = transcriptText
+        .replace(/\n{2,}/g, "\n\n")
+        .trim();
+
+    const report = intro + cleanedText;
+
+    document.getElementById("output").textContent = report;
+}
+</script>
+
+</body>
+</html>
