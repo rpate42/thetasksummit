@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statement Report Builder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section class="card" aria-labelledby="page-title">
+      <p class="eyebrow">Recorded Statement Intake</p>
+      <h1 id="page-title">Build a Report From a Transcript</h1>
+      <p class="intro">
+        Select who was interviewed, upload the transcript, and generate a report that identifies
+        the interviewee according to your selection.
+      </p>
+
+      <form id="intake-form" novalidate>
+        <div class="field-group">
+          <label for="interview-role">Interviewed Person</label>
+          <select id="interview-role" name="interviewRole" required>
+            <option value="">Select one</option>
+            <option value="insured">Insured</option>
+            <option value="claimant">Claimant</option>
+            <option value="witness">Witness</option>
+            <option value="other">Other</option>
+          </select>
+          <p class="hint">This selection controls how the report identifies the interviewee.</p>
+        </div>
+
+        <div class="field-group hidden" id="other-role-group">
+          <label for="other-role">Name or Title for "Other"</label>
+          <input
+            id="other-role"
+            name="otherRole"
+            type="text"
+            maxlength="120"
+            autocomplete="off"
+            placeholder="Example: Public Adjuster or Property Manager"
+          >
+          <p class="hint">Required only when "Other" is selected.</p>
+        </div>
+
+        <div class="field-group">
+          <label for="transcript-file">Transcript File</label>
+          <input
+            id="transcript-file"
+            name="transcriptFile"
+            type="file"
+            accept=".docx"
+            required
+          >
+          <p class="hint">Accepted format: `.docx`, maximum size: `100 KB`</p>
+        </div>
+
+        <div class="preview" id="role-preview" aria-live="polite">
+          Report will identify the interviewee as: <strong>Not selected yet</strong>
+        </div>
+
+        <div class="actions">
+          <button id="generate-button" type="submit">Generate Report</button>
+        </div>
+
+        <p class="status hidden" id="form-status" aria-live="polite"></p>
+        <p class="error hidden" id="form-error" role="alert"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
